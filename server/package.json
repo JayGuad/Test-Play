@@ -1,0 +1,14 @@
+{
+  "name": "corpay-vendor-portal-server",
+  "version": "1.0.0",
+  "description": "Backend API for Corpay Vendor Portal",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  }
+}

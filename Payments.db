@@ -1,6 +1,6 @@
 payment_id,vendor_id,payment_date,total_amount,currency,payment_method,status,card_number,card_expiration,card_cvv,remittance_email
 1001,1,2025-12-15,8250.75,USD,Virtual Card,completed,4532015112830366,03/26,847,James@ACMELandscaping.com
-1002,1,2026-01-10,3500.00,USD,ACH,completed,,,, James@ACMELandscaping.com
+1002,1,2026-01-10,3500.00,USD,ACH,completed,,,,James@ACMELandscaping.com
 1003,2,2025-11-20,45000.00,USD,Wire,completed,,,,Tim@ABCconstruction.com
 1004,2,2025-12-22,12750.50,USD,Virtual Card,completed,4916338506082832,06/26,294,Tim@ABCconstruction.com
 1005,2,2026-01-15,8900.00,USD,ACH,pending,,,,Tim@ABCconstruction.com
