@@ -8,6 +8,35 @@ A web-based demo portal that allows vendors to securely access their account inf
 
 ---
 
+## Branding
+
+This portal will use **Corpay** branding throughout the application.
+
+### Brand Assets
+- **Logo:** Corpay logo sourced from [Corpay.com](https://www.corpay.com)
+- **Color Scheme:** Colors extracted from Corpay.com brand guidelines
+
+### Brand Colors (from Corpay.com)
+| Color | Hex Code | Usage |
+|-------|----------|-------|
+| Corpay Blue (Primary) | #0066CC | Primary buttons, links, headers |
+| Corpay Dark Blue | #003366 | Navigation, footer, accents |
+| White | #FFFFFF | Backgrounds, text on dark |
+| Light Gray | #F5F5F5 | Secondary backgrounds, cards |
+| Dark Gray | #333333 | Body text |
+| Success Green | #28A745 | Completed status, success messages |
+| Warning Orange | #FFC107 | Pending status, warnings |
+| Error Red | #DC3545 | Failed status, error messages |
+
+### Brand Application
+- Login page features Corpay logo prominently
+- Navigation header includes Corpay logo
+- All primary action buttons use Corpay Blue
+- Consistent typography and spacing following modern design standards
+- Professional, clean aesthetic aligned with financial services industry
+
+---
+
 ## Data Storage
 
 ### LoginCredentials.db
@@ -188,13 +217,41 @@ Payments.db (1) ────────< Invoices.db (many)
 ## Technical Considerations
 
 ### Demo Environment Architecture
-- **Frontend:** Simple HTML/CSS/JavaScript or lightweight framework
-- **Backend:** Minimal server (Node.js/Python) to read CSV files
+- **Frontend:** React (Create React App or Vite)
+  - React Router for navigation
+  - Context API or useState for state management
+  - CSS Modules or Styled Components for styling
+  - Corpay brand colors and styling applied globally
+- **Backend:** Node.js/Express server to read CSV files and serve API endpoints
 - **Data Storage:** Comma-delimited text files (.db extension)
   - `LoginCredentials.db` - User authentication data
   - `Payments.db` - Payment header records
   - `Invoices.db` - Invoice records linked to payments
   - `LineItems.db` - Line item details linked to invoices
+
+### React Application Structure
+```
+src/
+├── components/
+│   ├── Login/
+│   ├── Dashboard/
+│   ├── PaymentHistory/
+│   ├── PaymentDetail/
+│   ├── VirtualCards/
+│   └── common/
+│       ├── Header/
+│       ├── Footer/
+│       ├── Button/
+│       └── Card/
+├── context/
+│   └── AuthContext.js
+├── services/
+│   └── api.js
+├── styles/
+│   └── corpayTheme.css
+├── App.js
+└── index.js
+```
 
 ### Security Notes (Demo Limitations)
 - Passwords stored in plain text (demo only - not for production)
