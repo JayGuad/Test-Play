@@ -1,0 +1,12 @@
+invoice_id,payment_id,vendor_id,invoice_number,invoice_date,invoice_amount,po_number,description
+5001,1001,1,INV-2025-001,2025-12-01,5000.00,PO-78432,December landscaping services
+5002,1001,1,INV-2025-002,2025-12-10,3250.75,PO-78455,Emergency tree removal
+5003,1002,1,INV-2026-001,2026-01-05,3500.00,PO-79001,January lawn maintenance
+5004,1003,2,INV-ABC-4521,2025-11-15,45000.00,PO-33001,Building renovation phase 1
+5005,1004,2,INV-ABC-4590,2025-12-18,7500.00,PO-33125,Electrical repairs
+5006,1004,2,INV-ABC-4595,2025-12-20,5250.50,PO-33130,Plumbing installation
+5007,1005,2,INV-ABC-4610,2026-01-10,8900.00,PO-33200,HVAC system maintenance
+5008,1006,3,INV-GU-2025-112,2025-11-25,9200.00,PO-UNI-445,Laboratory equipment maintenance
+5009,1006,3,INV-GU-2025-118,2025-11-28,6220.00,PO-UNI-448,Classroom AV system upgrade
+5010,1007,3,INV-GU-2026-005,2026-01-02,6200.00,PO-UNI-460,IT support services January
+5011,1008,1,INV-2026-005,2026-01-15,4750.25,PO-79050,Winter storm cleanup and repairs
