@@ -6,6 +6,7 @@ import Dashboard from './components/Dashboard'
 import PaymentHistory from './components/PaymentHistory'
 import PaymentDetail from './components/PaymentDetail'
 import VirtualCards from './components/VirtualCards'
+import ExportData from './components/ExportData'
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth()
@@ -32,6 +33,7 @@ function AppRoutes() {
         <Route path="payments" element={<PaymentHistory />} />
         <Route path="payments/:paymentId" element={<PaymentDetail />} />
         <Route path="cards" element={<VirtualCards />} />
+        <Route path="export" element={<ExportData />} />
       </Route>
     </Routes>
   )
