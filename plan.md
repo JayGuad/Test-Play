@@ -214,6 +214,131 @@ Payments.db (1) ────────< Invoices.db (many)
 
 ---
 
+### 4. Export Payment Data for ERP Cash Application
+
+**Description:** Enable vendors to download payment and remittance data in formats compatible with their ERP system for automated cash application and reconciliation.
+
+**Background:** Cash application is the process of matching incoming payments to open invoices in an ERP system. Different ERP systems accept different file formats, so vendors need flexibility to export data in a format their system can import.
+
+#### Supported Standard ERP Formats
+
+| Format | Description | Common ERP Systems |
+|--------|-------------|-------------------|
+| **BAI2** | Bank Administration Institute Version 2 - US banking standard for cash management | SAP, Oracle, Microsoft Dynamics, NetSuite, JD Edwards |
+| **MT940** | SWIFT standard for bank statement reporting (international) | SAP, Oracle E-Business Suite, Sage, European ERPs |
+| **camt.053** | ISO 20022 XML format - modern international standard replacing MT940 | SAP S/4HANA, Oracle Cloud, modern ERP systems |
+| **OFX** | Open Financial Exchange - XML-based format | QuickBooks, Quicken, Sage 50 |
+| **QBO** | QuickBooks Online format | QuickBooks Online, QuickBooks Desktop |
+| **CSV (Standard)** | Pre-mapped CSV with common cash application fields | Universal - all ERPs with import capability |
+| **Excel (.xlsx)** | Formatted spreadsheet with headers | Universal - manual import or macro-based |
+
+#### Standard Export Fields
+
+| Field | Description | Included In |
+|-------|-------------|-------------|
+| Payment ID | Unique payment identifier | All formats |
+| Payment Date | Date payment was issued | All formats |
+| Payment Amount | Total payment amount | All formats |
+| Currency | Currency code (USD, EUR, etc.) | All formats |
+| Payment Method | ACH, Wire, Virtual Card, Check | All formats |
+| Payment Reference | Bank or transaction reference | BAI2, MT940, camt.053 |
+| Invoice Number | Vendor's invoice number | All formats |
+| Invoice Amount | Amount applied to this invoice | All formats |
+| Invoice Date | Original invoice date | CSV, Excel, OFX |
+| PO Number | Purchase order reference | CSV, Excel |
+| Remittance Email | Email where remittance was sent | CSV, Excel |
+| Line Item Details | Individual line items (optional) | CSV, Excel |
+| GL Code | General ledger account codes | CSV, Excel |
+
+#### Custom Export Builder
+
+For vendors whose ERP requires a specific format not covered by standard templates:
+
+**Delimiter Options:**
+- Comma (,) - CSV standard
+- Tab (\t) - Tab-delimited
+- Pipe (|) - Pipe-delimited
+- Semicolon (;) - Common in European systems
+- Custom delimiter
+
+**Field Selection:**
+- Drag-and-drop field ordering
+- Select/deselect individual fields
+- Rename column headers to match ERP requirements
+- Add static/constant value columns
+
+**Format Options:**
+- Date format (YYYY-MM-DD, MM/DD/YYYY, DD/MM/YYYY, etc.)
+- Number format (decimal separator, thousands separator)
+- Text qualifier (quotes, none)
+- Include/exclude header row
+- Character encoding (UTF-8, ASCII, ISO-8859-1)
+
+**Template Management:**
+- Save custom export configurations as templates
+- Name and describe templates for future use
+- Set a default template
+- Share templates (future enhancement)
+
+#### Requirements
+
+- Date range filter (from/to dates)
+- Payment status filter (completed, pending, all)
+- Payment method filter
+- Single payment or batch export
+- Include invoice detail level or payment summary only
+- Option to include or exclude line items
+- Preview before download
+- Download history log
+
+#### User Flow
+
+1. Vendor navigates to "Export Data" or clicks "Export" from Payment History
+2. Selects date range and filters for payments to include
+3. Chooses export format:
+   - **Quick Export:** Select from dropdown of standard formats (BAI2, MT940, CSV, etc.)
+   - **Custom Export:** Opens the custom export builder
+4. For custom export:
+   a. Select delimiter type
+   b. Choose fields to include (drag to reorder)
+   c. Configure date/number formats
+   d. Preview sample output
+   e. Optionally save as template
+5. Click "Download" to generate and download file
+6. File is generated and downloaded to vendor's computer
+
+#### Example Output Formats
+
+**BAI2 Format Example:**
+```
+01,CORPAY,VENDOR001,210115,1200,001,80,1,2/
+02,VENDOR001,USD,010,150000,,,/
+03,001234,USD,010,150000,1,210115,1200,/
+16,195,50000,S,INV-2025-001,Payment for services/
+16,195,100000,S,INV-2025-002,Payment for services/
+49,150000,2/
+98,150000,1,4/
+99,150000,1,5/
+```
+
+**CSV Standard Export Example:**
+```
+Payment ID,Payment Date,Amount,Currency,Method,Invoice Number,Invoice Amount,PO Number
+1001,2025-12-15,8250.75,USD,Virtual Card,INV-2025-001,5000.00,PO-78432
+1001,2025-12-15,8250.75,USD,Virtual Card,INV-2025-002,3250.75,PO-78455
+1002,2026-01-10,3500.00,USD,ACH,INV-2026-001,3500.00,PO-79001
+```
+
+**Custom Pipe-Delimited Example:**
+```
+PAYMENT_REF|PAY_DATE|INVOICE|AMOUNT|GL_ACCOUNT
+1001|12/15/2025|INV-2025-001|5000.00|6200-100
+1001|12/15/2025|INV-2025-002|3250.75|6200-105
+1002|01/10/2026|INV-2026-001|3500.00|6200-100
+```
+
+---
+
 ## Technical Considerations
 
 ### Demo Environment Architecture
