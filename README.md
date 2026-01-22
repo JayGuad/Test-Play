@@ -10,6 +10,8 @@ A demo vendor portal built with React and Node.js, featuring Corpay branding.
 - **Dashboard** - Overview of payments, invoices, and virtual cards
 - **Payment History** - View all payments with filtering, drill down to invoices and line items
 - **Virtual Cards** - View and manage virtual card details
+- **Export Data** - Export payment data in multiple ERP formats (BAI2, MT940, CSV, etc.)
+- **AI Chat Support** - Conversational AI assistant for payment inquiries (powered by Claude)
 
 ## Quick Start
 
@@ -33,6 +35,21 @@ A demo vendor portal built with React and Node.js, featuring Corpay branding.
    cd server && npm install
    cd ../client && npm install
    ```
+
+### Configure AI Chat (Optional)
+
+To enable the AI Chat Support feature, set your Anthropic API key:
+
+```bash
+# Create a .env file in the server directory
+cd server
+cp .env.example .env
+
+# Edit .env and add your Anthropic API key
+ANTHROPIC_API_KEY=your_api_key_here
+```
+
+Get your API key from: https://console.anthropic.com/
 
 ### Running the Application
 
@@ -110,6 +127,9 @@ You can edit these files to add/modify demo data.
 | `/api/lineitems/:invoiceId` | GET | Get line items for invoice |
 | `/api/virtualcards/:vendorId` | GET | Get virtual cards for vendor |
 | `/api/dashboard/:vendorId` | GET | Get dashboard summary |
+| `/api/export/:vendorId` | POST | Export payment data in various formats |
+| `/api/chat/:vendorId` | POST | AI chat assistant for payment inquiries |
+| `/api/templates/:vendorId` | GET/POST | Manage export templates |
 
 ## Tech Stack
 
