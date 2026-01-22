@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Outlet, NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import ChatWidget from './ChatWidget'
 
 // SVG Icons
 const DashboardIcon = () => (
@@ -132,6 +133,9 @@ function Layout() {
           <Outlet />
         </main>
       </div>
+      
+      {/* AI Chat Widget */}
+      <ChatWidget />
     </div>
   )
 }

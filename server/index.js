@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const Anthropic = require('@anthropic-ai/sdk');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -11,6 +12,14 @@ app.use(express.json());
 
 // In-memory storage for export templates (in production, use a database)
 const exportTemplates = {};
+
+// In-memory storage for chat history (in production, use a database)
+const chatHistory = {};
+
+// Initialize Anthropic client (API key must be set via ANTHROPIC_API_KEY environment variable)
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY
+});
 
 // Helper function to parse CSV files
 function parseCSV(filePath) {
@@ -700,6 +709,193 @@ app.get('/api/export-fields', (req, res) => {
     { field: 'line_total', label: 'Line Total', category: 'Line Item' },
     { field: 'gl_code', label: 'GL Code', category: 'Line Item' }
   ]);
+});
+
+// ============================================
+// AI CHAT SUPPORT
+// ============================================
+
+// Build context from vendor's payment data
+function buildPaymentContext(vendorId) {
+  const payments = parseCSV(getDataPath('Payments.db'));
+  const invoices = parseCSV(getDataPath('Invoices.db'));
+  const lineItems = parseCSV(getDataPath('LineItems.db'));
+  const credentials = parseCSV(getDataPath('LoginCredentials.db'));
+  
+  const vendor = credentials.find(c => c.vendor_id === vendorId);
+  const vendorPayments = payments.filter(p => p.vendor_id === vendorId);
+  const vendorInvoices = invoices.filter(i => i.vendor_id === vendorId);
+  
+  // Enrich payments with invoice details
+  const enrichedPayments = vendorPayments.map(payment => {
+    const paymentInvoices = vendorInvoices.filter(i => i.payment_id === payment.payment_id);
+    const enrichedInvoices = paymentInvoices.map(invoice => {
+      const invoiceLineItems = lineItems.filter(l => l.invoice_id === invoice.invoice_id);
+      return {
+        invoice_id: invoice.invoice_id,
+        invoice_number: invoice.invoice_number,
+        invoice_date: invoice.invoice_date,
+        invoice_amount: invoice.invoice_amount,
+        po_number: invoice.po_number,
+        description: invoice.description,
+        line_items: invoiceLineItems.map(li => ({
+          description: li.description,
+          quantity: li.quantity,
+          unit_price: li.unit_price,
+          line_total: li.line_total,
+          gl_code: li.gl_code
+        }))
+      };
+    });
+    
+    return {
+      payment_id: payment.payment_id,
+      payment_date: payment.payment_date,
+      total_amount: payment.total_amount,
+      currency: payment.currency,
+      payment_method: payment.payment_method,
+      status: payment.status,
+      card_last_four: payment.card_number ? payment.card_number.slice(-4) : null,
+      invoices: enrichedInvoices
+    };
+  });
+  
+  // Calculate summary stats
+  const totalReceived = vendorPayments
+    .filter(p => p.status === 'completed')
+    .reduce((sum, p) => sum + parseFloat(p.total_amount || 0), 0);
+  const pendingAmount = vendorPayments
+    .filter(p => p.status === 'pending')
+    .reduce((sum, p) => sum + parseFloat(p.total_amount || 0), 0);
+  
+  return {
+    vendor_name: vendor?.vendor_name || 'Unknown Vendor',
+    vendor_email: vendor?.email || '',
+    summary: {
+      total_payments: vendorPayments.length,
+      completed_payments: vendorPayments.filter(p => p.status === 'completed').length,
+      pending_payments: vendorPayments.filter(p => p.status === 'pending').length,
+      total_received: totalReceived.toFixed(2),
+      pending_amount: pendingAmount.toFixed(2),
+      total_invoices: vendorInvoices.length
+    },
+    payments: enrichedPayments
+  };
+}
+
+// System prompt for the AI assistant
+const SYSTEM_PROMPT = `You are a helpful payment support assistant for the Corpay Vendor Portal. You help vendors understand their payment history, invoice status, and answer questions about their account.
+
+Your personality:
+- Professional but friendly
+- Concise but thorough
+- Always reference specific data (payment IDs, dates, amounts) when answering
+- Use proper currency formatting (e.g., $5,000.00)
+- Use clear date formatting (e.g., December 15, 2025)
+
+Guidelines:
+1. When asked about a specific invoice, search through the payments to find it and provide complete details
+2. When asked about payment status, be specific about whether it's completed, pending, or processing
+3. For questions you cannot answer from the data, politely explain and suggest contacting support@corpay.com
+4. For payment method changes, direct them to contact support@corpay.com or their account manager
+5. Never reveal full card numbers - only reference the last 4 digits
+6. If the vendor has no data matching their query, let them know clearly
+
+You have access to the vendor's complete payment data which will be provided in each message.`;
+
+// Chat endpoint
+app.post('/api/chat/:vendorId', async (req, res) => {
+  try {
+    const { vendorId } = req.params;
+    const { message, conversationId } = req.body;
+    
+    if (!message) {
+      return res.status(400).json({ error: 'Message is required' });
+    }
+    
+    // Build context from vendor's data
+    const context = buildPaymentContext(vendorId);
+    
+    // Initialize or get conversation history
+    const convId = conversationId || `${vendorId}-${Date.now()}`;
+    if (!chatHistory[convId]) {
+      chatHistory[convId] = [];
+    }
+    
+    // Add user message to history
+    chatHistory[convId].push({
+      role: 'user',
+      content: message
+    });
+    
+    // Keep only last 10 messages for context
+    const recentHistory = chatHistory[convId].slice(-10);
+    
+    // Build the user message with context
+    const contextMessage = `
+VENDOR CONTEXT:
+- Vendor Name: ${context.vendor_name}
+- Email: ${context.vendor_email}
+
+PAYMENT SUMMARY:
+- Total Payments: ${context.summary.total_payments}
+- Completed: ${context.summary.completed_payments}
+- Pending: ${context.summary.pending_payments}
+- Total Received: $${context.summary.total_received}
+- Pending Amount: $${context.summary.pending_amount}
+- Total Invoices: ${context.summary.total_invoices}
+
+PAYMENT DATA:
+${JSON.stringify(context.payments, null, 2)}
+
+USER QUESTION: ${message}`;
+
+    // Prepare messages for Claude
+    const messages = recentHistory.slice(0, -1).concat([
+      { role: 'user', content: contextMessage }
+    ]);
+    
+    // Call Claude API
+    const response = await anthropic.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 1024,
+      system: SYSTEM_PROMPT,
+      messages: messages
+    });
+    
+    const assistantMessage = response.content[0].text;
+    
+    // Add assistant response to history
+    chatHistory[convId].push({
+      role: 'assistant',
+      content: assistantMessage
+    });
+    
+    res.json({
+      conversationId: convId,
+      message: assistantMessage
+    });
+    
+  } catch (error) {
+    console.error('Chat error:', error);
+    res.status(500).json({ 
+      error: 'Failed to process chat message',
+      details: error.message 
+    });
+  }
+});
+
+// Get chat history
+app.get('/api/chat/:vendorId/:conversationId', (req, res) => {
+  const { conversationId } = req.params;
+  res.json(chatHistory[conversationId] || []);
+});
+
+// Clear chat history
+app.delete('/api/chat/:vendorId/:conversationId', (req, res) => {
+  const { conversationId } = req.params;
+  delete chatHistory[conversationId];
+  res.json({ success: true });
 });
 
 app.listen(PORT, () => {
