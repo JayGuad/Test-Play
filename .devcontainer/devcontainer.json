@@ -1,0 +1,29 @@
+{
+  "name": "Corpay Vendor Portal",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {},
+  "forwardPorts": [3000, 3001],
+  "postCreateCommand": "npm run install:all",
+  "postStartCommand": "",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+  "portsAttributes": {
+    "3000": {
+      "label": "Frontend",
+      "onAutoForward": "openBrowser"
+    },
+    "3001": {
+      "label": "Backend API",
+      "onAutoForward": "silent"
+    }
+  }
+}
