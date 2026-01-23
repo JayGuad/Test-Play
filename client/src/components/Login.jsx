@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import CorpayLogo from './CorpayLogo'
 
 function Login() {
   const [email, setEmail] = useState('')
@@ -22,13 +23,11 @@ function Login() {
     <div className="login-page">
       <div className="login-container">
         <div className="login-logo">
-          <span className="logo-text">
-            Corpay<span className="logo-accent">^</span>
-          </span>
+          <CorpayLogo />
         </div>
         
-        <h1 className="login-title">Vendor Portal</h1>
-        <p className="login-subtitle">Sign in to access your account</p>
+        <h1 className="login-title">Corpay Vendor Portal</h1>
+        <p className="login-subtitle">Securely manage payments with Corpay</p>
         
         {error && (
           <div className="error-message">
