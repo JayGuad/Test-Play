@@ -2,13 +2,13 @@
 
 :root {
   /* Corpay Brand Colors */
-  --corpay-blue: #0057b8;
-  --corpay-dark-blue: #162644;
-  --corpay-navy: #0b1b33;
-  --corpay-teal: #00a6b2;
-  --corpay-cyan: #19c6c9;
-  --corpay-orange: #f46b45;
-  --corpay-red: #e74c3c;
+  --corpay-blue: #7b1b2a;
+  --corpay-dark-blue: #4a0e1d;
+  --corpay-navy: #2a0a12;
+  --corpay-teal: #c15064;
+  --corpay-cyan: #e07a8a;
+  --corpay-orange: #d46b4f;
+  --corpay-red: #a61b2b;
   
   /* Neutral Colors */
   --white: #ffffff;
@@ -42,7 +42,7 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  background-color: #eef2f7;
+  background-color: #f6f1f2;
   color: var(--text-dark);
   line-height: 1.5;
 }
@@ -56,7 +56,7 @@ body {
 /* Sidebar */
 .sidebar {
   width: 240px;
-  background: linear-gradient(180deg, var(--corpay-navy), #0a1529 85%);
+  background: linear-gradient(180deg, var(--corpay-navy), #1b080f 85%);
   color: var(--white);
   display: flex;
   flex-direction: column;
@@ -88,16 +88,6 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-}
-
-.corpay-logo.dark .corpay-logo-word {
-  color: var(--white);
-}
-
-.corpay-logo.light .corpay-logo-word {
-  color: var(--corpay-dark-blue);
 }
 
 .corpay-logo-mark {
@@ -107,26 +97,20 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 8px 18px rgba(59, 12, 22, 0.28);
+  overflow: hidden;
 }
 
-.corpay-logo-mark svg {
-  width: 36px;
-  height: 36px;
+.corpay-logo-mark img {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
-.corpay-logo-word {
-  font-size: 20px;
-  text-transform: uppercase;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-}
-
-.corpay-logo-accent {
-  font-size: 12px;
-  letter-spacing: 1px;
-  color: var(--corpay-teal);
+.corpay-logo-word img {
+  height: 28px;
+  width: auto;
+  display: block;
 }
 
 .corpay-logo.compact .corpay-logo-mark {
@@ -134,10 +118,6 @@ body {
   height: 32px;
 }
 
-.corpay-logo.compact .corpay-logo-mark svg {
-  width: 32px;
-  height: 32px;
-}
 
 .collapse-btn {
   background: none;
@@ -447,11 +427,11 @@ tr:last-child td {
 .btn-primary {
   background: linear-gradient(135deg, var(--corpay-blue), var(--corpay-teal));
   color: var(--white);
-  box-shadow: 0 10px 16px rgba(0, 87, 184, 0.18);
+  box-shadow: 0 12px 18px rgba(123, 27, 42, 0.25);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #004a9c, #00929c);
+  background: linear-gradient(135deg, #671624, #b0475a);
 }
 
 .btn-secondary {
@@ -479,7 +459,7 @@ tr:last-child td {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at top, rgba(0, 166, 178, 0.25), transparent 55%),
+  background: radial-gradient(circle at top, rgba(193, 80, 100, 0.35), transparent 55%),
     linear-gradient(135deg, var(--corpay-navy) 0%, var(--corpay-dark-blue) 100%);
 }
 
@@ -501,8 +481,8 @@ tr:last-child td {
   justify-content: center;
 }
 
-.login-logo .corpay-logo-word {
-  font-size: 24px;
+.login-logo .corpay-logo-word img {
+  height: 30px;
 }
 
 .login-title {

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 64">
+  <rect width="260" height="64" fill="none"/>
+  <text x="0" y="46" font-family="Inter, Arial, sans-serif" font-size="40" font-weight="700" letter-spacing="2" fill="#ffffff">CORPAY</text>
+  <path d="M178 14l10 14 10-14" fill="none" stroke="#c15064" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
