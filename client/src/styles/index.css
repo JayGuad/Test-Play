@@ -2,20 +2,20 @@
 
 :root {
   /* Corpay Brand Colors */
-  --corpay-blue: #c2184b;
-  --corpay-dark-blue: #111111;
-  --corpay-navy: #0a0a0a;
-  --corpay-teal: #e04b7b;
+  --corpay-blue: #1f7cc5;
+  --corpay-dark-blue: #1a1d24;
+  --corpay-navy: #0b0f14;
+  --corpay-teal: #c61b5a;
   --corpay-cyan: #f07aa0;
-  --corpay-orange: #d46b4f;
-  --corpay-red: #b10f3a;
+  --corpay-orange: #d6a11f;
+  --corpay-red: #9f0f3d;
   
   /* Neutral Colors */
   --white: #ffffff;
-  --light-gray: #f5f7fa;
-  --medium-gray: #e1e5eb;
-  --dark-gray: #6b7280;
-  --text-dark: #1f2937;
+  --light-gray: #f4f4f6;
+  --medium-gray: #d9d9de;
+  --dark-gray: #5f636b;
+  --text-dark: #1b1f28;
   
   /* Status Colors */
   --success-green: #10b981;
