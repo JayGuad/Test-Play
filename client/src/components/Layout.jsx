@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Outlet, NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import ChatWidget from './ChatWidget'
+import CorpayLogo from './CorpayLogo'
 
 // SVG Icons
 const DashboardIcon = () => (
@@ -62,10 +63,7 @@ function Layout() {
       <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-header">
           <div className="logo">
-            <span className="logo-text">
-              {!collapsed && <>Corpay<span className="logo-accent">^</span></>}
-              {collapsed && <span className="logo-accent">C^</span>}
-            </span>
+            <CorpayLogo compact={collapsed} theme="dark" />
           </div>
           <button 
             className="collapse-btn" 
