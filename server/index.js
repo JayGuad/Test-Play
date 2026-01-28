@@ -150,7 +150,34 @@ app.get('/api/dashboard/:vendorId', (req, res) => {
     
     const vendorPayments = payments.filter(p => p.vendor_id === vendorId);
     const vendorInvoices = invoices.filter(i => i.vendor_id === vendorId);
-    
+
+    const statusTotals = vendorPayments.reduce((acc, payment) => {
+      const status = payment.status || 'unknown';
+      const amount = parseFloat(payment.total_amount || 0);
+      acc.counts[status] = (acc.counts[status] || 0) + 1;
+      acc.amounts[status] = (acc.amounts[status] || 0) + amount;
+      return acc;
+    }, { counts: {}, amounts: {} });
+
+    const buildMethodBreakdown = (filteredPayments) => {
+      const methodMap = filteredPayments.reduce((acc, payment) => {
+        const method = payment.payment_method || 'Unknown';
+        const amount = parseFloat(payment.total_amount || 0);
+        if (!acc[method]) {
+          acc[method] = { method, count: 0, amount: 0 };
+        }
+        acc[method].count += 1;
+        acc[method].amount += amount;
+        return acc;
+      }, {});
+      return Object.values(methodMap).sort((a, b) => b.amount - a.amount);
+    };
+
+    const pendingLikePayments = vendorPayments.filter(p => p.status === 'pending' || p.status === 'processing');
+    const completedPaymentsList = vendorPayments.filter(p => p.status === 'completed');
+    const pendingByMethod = buildMethodBreakdown(pendingLikePayments);
+    const completedByMethod = buildMethodBreakdown(completedPaymentsList);
+
     const totalPayments = vendorPayments.length;
     const completedPayments = vendorPayments.filter(p => p.status === 'completed').length;
     const pendingPayments = vendorPayments.filter(p => p.status === 'pending').length;
@@ -170,6 +197,16 @@ app.get('/api/dashboard/:vendorId', (req, res) => {
       pendingAmount,
       totalInvoices: vendorInvoices.length,
       virtualCardCount,
+      pendingByMethod,
+      completedByMethod,
+      pendingTotals: {
+        count: (statusTotals.counts.pending || 0) + (statusTotals.counts.processing || 0),
+        amount: (statusTotals.amounts.pending || 0) + (statusTotals.amounts.processing || 0)
+      },
+      completedTotals: {
+        count: statusTotals.counts.completed || 0,
+        amount: statusTotals.amounts.completed || 0
+      },
       recentPayments: vendorPayments.slice(0, 5)
     });
   } catch (error) {
