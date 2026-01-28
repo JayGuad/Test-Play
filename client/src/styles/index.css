@@ -589,6 +589,56 @@ tr:last-child td {
   margin-top: 4px;
 }
 
+/* Dashboard Charts */
+.dashboard-charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.chart-subtitle {
+  font-size: 13px;
+  color: var(--dark-gray);
+  margin-top: 4px;
+}
+
+.bar-list {
+  display: grid;
+  gap: 14px;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 140px;
+  gap: 12px;
+  align-items: center;
+}
+
+.bar-label {
+  font-size: 13px;
+  color: var(--dark-gray);
+}
+
+.bar-track {
+  height: 10px;
+  background: var(--light-gray);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--corpay-blue), var(--corpay-teal));
+  border-radius: inherit;
+}
+
+.bar-meta {
+  font-size: 12px;
+  color: var(--text-dark);
+  text-align: right;
+}
+
 /* Virtual Card */
 .virtual-card {
   background: linear-gradient(135deg, var(--corpay-dark-blue), var(--corpay-navy));
@@ -800,5 +850,14 @@ tr:last-child td {
   
   .aging-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bar-row {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .bar-meta {
+    text-align: left;
   }
 }

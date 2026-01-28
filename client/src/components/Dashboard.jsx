@@ -39,6 +39,36 @@ function Dashboard() {
     })
   }
 
+  const pendingTotals = data?.pendingTotals || { count: 0, amount: 0 }
+  const completedTotals = data?.completedTotals || { count: 0, amount: 0 }
+  const pendingByMethod = data?.pendingByMethod || []
+  const completedByMethod = data?.completedByMethod || []
+
+  const renderMethodBars = (methods) => {
+    const maxAmount = methods.reduce((max, method) => (
+      method.amount > max ? method.amount : max
+    ), 0)
+
+    if (methods.length === 0) {
+      return <div style={{ color: '#6b7280' }}>No payments to display.</div>
+    }
+
+    return methods.map((method) => {
+      const width = maxAmount > 0 ? (method.amount / maxAmount) * 100 : 0
+      return (
+        <div className="bar-row" key={method.method}>
+          <div className="bar-label">{method.method}</div>
+          <div className="bar-track">
+            <div className="bar-fill" style={{ width: `${width}%` }}></div>
+          </div>
+          <div className="bar-meta">
+            {formatCurrency(method.amount)} · {method.count}
+          </div>
+        </div>
+      )
+    })
+  }
+
   if (loading) {
     return (
       <div className="loading">
@@ -77,44 +107,40 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* Invoice Aging */}
-      <div className="card section">
-        <div className="card-header">
-          <h2 className="card-title">Payment Summary</h2>
-        </div>
-        <div className="card-body">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <span style={{ color: '#6b7280' }}>All Payments</span>
-            <span style={{ fontSize: '24px', fontWeight: '600' }}>
-              Total: {formatCurrency((data?.totalAmount || 0) + (data?.pendingAmount || 0))}
-            </span>
+      {/* Payment Charts */}
+      <div className="dashboard-charts">
+        <div className="card">
+          <div className="card-header">
+            <div>
+              <h2 className="card-title">Pending by Modality</h2>
+              <div className="chart-subtitle">
+                {formatCurrency(pendingTotals.amount)} · {pendingTotals.count} payments
+              </div>
+            </div>
           </div>
-          <div className="aging-grid">
-            <div className="aging-bar current">
-              <div className="aging-label">Completed</div>
-              <div className="aging-amount">{formatCurrency(data?.totalAmount || 0)}</div>
-              <div className="aging-count">{data?.completedPayments || 0} Payments</div>
+          <div className="card-body">
+            <div className="bar-list">
+              {renderMethodBars(pendingByMethod)}
             </div>
-            <div className="aging-bar days-30">
-              <div className="aging-label">Pending</div>
-              <div className="aging-amount">{formatCurrency(data?.pendingAmount || 0)}</div>
-              <div className="aging-count">{data?.pendingPayments || 0} Payments</div>
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-header">
+            <div>
+              <h2 className="card-title">Completed by Modality</h2>
+              <div className="chart-subtitle">
+                {formatCurrency(completedTotals.amount)} · {completedTotals.count} payments
+              </div>
             </div>
-            <div className="aging-bar days-60">
-              <div className="aging-label">Total Payments</div>
-              <div className="aging-amount">{data?.totalPayments || 0}</div>
-              <div className="aging-count">All time</div>
-            </div>
-            <div className="aging-bar days-90">
-              <div className="aging-label">Invoices</div>
-              <div className="aging-amount">{data?.totalInvoices || 0}</div>
-              <div className="aging-count">Total invoices</div>
+          </div>
+          <div className="card-body">
+            <div className="bar-list">
+              {renderMethodBars(completedByMethod)}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Recent Payments */}
       <div className="card">
         <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h2 className="card-title">Recent Payments</h2>
