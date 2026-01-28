@@ -690,6 +690,21 @@ tr:last-child td {
   background: var(--light-gray) !important;
 }
 
+/* Invoice Caret */
+.invoice-caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid currentColor;
+  transition: transform 0.2s ease;
+}
+
+.invoice-caret.expanded {
+  transform: rotate(180deg);
+}
+
 /* Back Button */
 .back-link {
   display: inline-flex;

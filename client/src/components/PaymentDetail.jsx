@@ -214,8 +214,25 @@ function PaymentDetail() {
                     <div className="money" style={{ fontSize: '18px', fontWeight: '600' }}>
                       {formatCurrency(parseFloat(invoice.invoice_amount))}
                     </div>
-                    <div style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px' }}>
-                      {expandedInvoice === invoice.invoice_id ? '▲ Hide Items' : '▼ View Items'}
+                    <div
+                      style={{
+                        fontSize: '13px',
+                        color: '#6b7280',
+                        marginTop: '4px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}
+                    >
+                      <span
+                        className={`invoice-caret ${
+                          expandedInvoice === invoice.invoice_id ? 'expanded' : ''
+                        }`}
+                        aria-hidden="true"
+                      />
+                      <span>
+                        {expandedInvoice === invoice.invoice_id ? 'Hide Items' : 'View Items'}
+                      </span>
                     </div>
                   </div>
                 </div>
